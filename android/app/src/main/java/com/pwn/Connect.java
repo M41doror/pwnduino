@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.jcraft.jsch.*;
 import java.io.*;
+import java.util.Properties;
 
 
 public class Connect extends AppCompatActivity {
@@ -12,7 +13,7 @@ public class Connect extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
-        JSch jsch = new JSch();
+        /*JSch jsch = new JSch();
         String user = "root@10.55.176.112";
 
         String host = "127.0.0.1";
@@ -98,8 +99,38 @@ public class Connect extends AppCompatActivity {
 
             System.out.println("Erorr " + je);
         }
+*/
 
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
+                Session session;
+                JSch jsch;
+                try {
+                    jsch = new JSch();
+
+                    session = jsch.getSession("derek", "10.55.176.112", 22);
+                    session.setPassword("password");
+
+                    // Avoid asking for key confirmation
+                    Properties prop = new Properties();
+                    prop.put("StrictHostKeyChecking", "no");
+                    session.setConfig(prop);
+
+                    session.connect();
+
+                    if(session.isConnected()){
+                        System.out.println(this.getClass().getSimpleName() + " CONNECTED");
+                        System.out.println(this.getClass().getSimpleName() + " YOO " + jsch.getIdentityRepository().getName()+" "+session.getClientVersion() + " " + session.isConnected());
+                    }else{
+                        System.out.println(this.getClass().getSimpleName() + " NOT CONNECTED");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
