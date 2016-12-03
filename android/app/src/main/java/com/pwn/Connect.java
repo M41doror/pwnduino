@@ -17,8 +17,8 @@ public class Connect extends AppCompatActivity {
         setContentView(R.layout.activity_connect);
         JSch jsch=new JSch();
         String user="root@10.55.176.112";
+
         String host="127.0.0.1";
-        Session session=jsch.getSession(host,user,22);
         UserInfo ui = new UserInfo() {
             @Override
             public String getPassphrase() {
@@ -50,11 +50,30 @@ public class Connect extends AppCompatActivity {
 
             }
         };
-        Channel channel=session.openChannel("exec");
-
-        session.connect();
 
 
-        session.setUserInfo(ui);
+        try{
+            Session session=jsch.getSession(host,user,22);
+            session.setUserInfo(ui);
+            session.connect();
+            Channel channel=session.openChannel("exec");
+
+            channel.setInputStream(null);
+
+            String command = "dir";
+            ((ChannelExec)channel).setCommand(command);
+
+            ((ChannelExec)channel).setErrStream(System.err);
+            channel.connect();
+
+
+
+
+        }catch (JSchException je){
+        System.out.println("ERROR ERROR "+ je);
+        }
+
+
+
     }
 }
