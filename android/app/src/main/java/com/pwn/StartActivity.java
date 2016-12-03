@@ -2,6 +2,7 @@ package com.pwn;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,15 +22,16 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("");
+        Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/SourceCodePro-Bold.ttf");
         setContentView(R.layout.activity_start);
 
         TypeWriter writer = (TypeWriter)findViewById(R.id.Typewriter);
 
         //Add a character every 150ms
         writer.setCharacterDelay(200);
-
+        writer.setTypeface(custom_font);
         writer.setTextColor(Color.WHITE);
-        writer.animateText("Pwnduino_");
+        writer.animateText("pwnduino_");
 
         final Intent i = new Intent(this, MainActivity.class);
 
