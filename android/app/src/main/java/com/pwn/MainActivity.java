@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -118,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     jsch = new JSch();
 
-                    session = jsch.getSession("derek", "10.55.176.112", 22);
+                    /*session = jsch.getSession("derek", "10.55.176.112", 22);
                     session.setPassword("password");
-
+*/
+                    session = jsch.getSession("vmware", "theeditor.ddns.net", 22);
+                    session.setPassword("123");
                     // Avoid asking for key confirmation
                     Properties prop = new Properties();
                     prop.put("StrictHostKeyChecking", "no");
@@ -129,6 +132,16 @@ public class MainActivity extends AppCompatActivity {
                     session.connect();
 
                     if(session.isConnected()){
+                        Channel channel = session.openChannel("sftp");
+                        System.out.println("Getting connected");
+                        channel.connect();
+                        System.out.println("connected successfully");
+                        ChannelSftp sftpChannel = (ChannelSftp) channel;
+
+                        System.out.println("Directory:" + sftpChannel.pwd());
+                        sftpChannel.mkdir("Derek");
+                       
+
                         System.out.println(this.getClass().getSimpleName() + " CONNECTED");
                         System.out.println(this.getClass().getSimpleName() + " YOO " + jsch.getIdentityRepository().getName()+" "+session.getClientVersion() + " " + session.isConnected());
                     }else{

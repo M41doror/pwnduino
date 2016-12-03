@@ -111,8 +111,9 @@ public class Connect extends AppCompatActivity {
                 try {
                     jsch = new JSch();
 
-                    session = jsch.getSession("derek", "10.55.176.112", 22);
-                    session.setPassword("password");
+                    session = jsch.getSession("vmware", "theeditor.ddns.net", 22);
+                    session.setPassword("123");
+
 
                     // Avoid asking for key confirmation
                     Properties prop = new Properties();
@@ -122,6 +123,14 @@ public class Connect extends AppCompatActivity {
                     session.connect();
 
                     if(session.isConnected()){
+                        Channel channel = session.openChannel("sftp");
+                        System.out.println("Getting connected");
+                        channel.connect();
+                        System.out.println("connected successfully");
+                        ChannelSftp sftpChannel = (ChannelSftp) channel;
+
+                        System.out.println("Directory:" + sftpChannel.pwd());
+
                         System.out.println(this.getClass().getSimpleName() + " CONNECTED");
                         System.out.println(this.getClass().getSimpleName() + " YOO " + jsch.getIdentityRepository().getName()+" "+session.getClientVersion() + " " + session.isConnected());
                     }else{
