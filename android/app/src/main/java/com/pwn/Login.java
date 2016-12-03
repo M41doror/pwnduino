@@ -30,7 +30,7 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                final Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                final Intent i = new Intent(context, MainActivity.class);
                 i.putExtra("host", host.getText().toString());
                 i.putExtra("user", login.getText().toString());
                 i.putExtra("password", password.getText().toString());

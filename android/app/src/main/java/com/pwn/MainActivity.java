@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("C: > pwn ");
-        final TextView console = (TextView) findViewById(R.id.console);
+
 
         /*JSch jsch = new JSch();
         String user ="derek";
@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Session session;
                 JSch jsch;
+
+            TextView console = (TextView) findViewById(R.id.console);
                 try {
                     jsch = new JSch();
 
