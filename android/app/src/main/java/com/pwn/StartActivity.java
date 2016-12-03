@@ -31,16 +31,16 @@ public class StartActivity extends AppCompatActivity {
         writer.setTextColor(Color.WHITE);
         writer.animateText("Pwnduino_");
 
+        final Intent i = new Intent(this, MainActivity.class);
 
-        writer.startAnimation(AnimationUtils.loadAnimation(this, R.anim.left_to_right));
-
+        fadeOutAndHideImage(writer, i);
     }
 
-    public void fadeOutAndHideImage(final ImageView img, final Intent x) {
+    public void fadeOutAndHideImage(final TextView img, final Intent x) {
 
         Animation fadeOut = new AlphaAnimation(1, 0);
         fadeOut.setInterpolator(new AccelerateInterpolator());
-        fadeOut.setDuration(2500);
+        fadeOut.setDuration(3100);
 
         fadeOut.setAnimationListener(new Animation.AnimationListener() {
             public void onAnimationEnd(Animation animation) {
@@ -61,4 +61,5 @@ public class StartActivity extends AppCompatActivity {
         img.startAnimation(fadeOut);
 
     }
+
 }
