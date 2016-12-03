@@ -16,9 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Connect">
-            <intent-filter>
-                
-            </intent-filter>
+
         </activity>
     </application>
 
