@@ -13,6 +13,7 @@ public class Connect extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect);
+        setTitle("C: > pwn ");
         /*JSch jsch = new JSch();
         String user = "root@10.55.176.112";
 

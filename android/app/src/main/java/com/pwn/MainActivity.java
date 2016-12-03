@@ -2,6 +2,7 @@ package com.pwn;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -10,6 +11,8 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
+
+
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -20,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("C: > pwn ");
+        final TextView console = (TextView) findViewById(R.id.console);
         /*JSch jsch = new JSch();
         String user ="derek";
 
@@ -132,15 +137,20 @@ public class MainActivity extends AppCompatActivity {
                     session.connect();
 
                     if(session.isConnected()){
+                        console.setText(console.getText() + "\nSession Connected...");
                         Channel channel = session.openChannel("sftp");
                         System.out.println("Getting connected");
                         channel.connect();
+                        console.setText(console.getText() + "\nChannel Connected...");
                         System.out.println("connected successfully");
+
+                        console.setText(console.getText() + "\nGood to go. :)");
                         ChannelSftp sftpChannel = (ChannelSftp) channel;
 
                         System.out.println("Directory:" + sftpChannel.pwd());
+
                         sftpChannel.mkdir("Derek");
-                       
+
 
                         System.out.println(this.getClass().getSimpleName() + " CONNECTED");
                         System.out.println(this.getClass().getSimpleName() + " YOO " + jsch.getIdentityRepository().getName()+" "+session.getClientVersion() + " " + session.isConnected());

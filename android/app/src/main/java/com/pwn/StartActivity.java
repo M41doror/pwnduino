@@ -33,7 +33,7 @@ public class StartActivity extends AppCompatActivity {
         writer.setTextColor(Color.WHITE);
         writer.animateText("pwnduino_");
 
-        final Intent i = new Intent(this, MainActivity.class);
+        final Intent i = new Intent(this, Login.class);
 
         fadeOutAndHideImage(writer, i);
     }
