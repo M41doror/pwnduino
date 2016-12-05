@@ -1,11 +1,17 @@
-import os, sys, argparse
+############## Python Modules ##############
+import os, sys, argparse, signal
 from time import sleep
+############## ############## ##############
 
+
+############## Global Color Vars ##############
+
+# Standard Colors
 W = '\033[0m'  # white (normal)
 R = '\033[31m'  # red
 G = '\033[32m'  # green
 O = '\033[33m'  # orange
-B = '\033[34m'  # blue                      # Colors to make program and output text much more appealing
+B = '\033[34m'  # blue
 P = '\033[35m'  # purple
 C = '\033[36m'  # cyan
 LR = '\033[1;31m' # light red
@@ -15,10 +21,11 @@ LB = '\033[1;34m' # light blue
 LP = '\033[1;35m' # light purple
 LC = '\033[1;36m' # light cyan
 
+# FAIL and SUCCESS
+FAIL = "[" + R + "FAILED!" + W + "]"
+SUCCESS = "[" + G + "SUCCESS" + W + "]"
 
-parser = argparse.ArgumentParser(description='Turn arduino into a pwnDuino')
-parser.add_argument('--check-deps', help="Check if dependencies are installed")
-
+# Cowsay!
 header = LP + """
 
   ______________________________________
@@ -33,6 +40,35 @@ header = LP + """
 
 """ + W
 
+############## ############## ##############
+
+
+############## Interrupt Handler ##############
+def handler(signal, frame):
+    print R + "Interrupted! Stopping..." + W
+    os.system("rm -r src/dmesg.txt &>/dev/null")
+    sys.exit(1)
+
+signal.signal(signal.SIGINT, handler)
+############## ############## ##############
+
+
+############## Command-line Parser ##############
+parser = argparse.ArgumentParser(description='Turn Arduino into a pwnDuino')
+parser.add_argument('--check-deps', dest="dep", action="store_false", help="Check if dependencies are installed")
+args = parser.parse_args()
+
+dep = args.dep
+
+if dep is False:
+    print "Checking dependencies"
+    raw_input()
+else:
+    pass
+############## ############## ##############
+
+
+############## Actual Code ##############
 print header
 
 os.system("dmesg -c > /dev/null")
@@ -40,12 +76,15 @@ os.system("dmesg -c > /dev/null")
 print LC + "Welcome to pwnduino-client! Please plug in (or plug out and plug in again) your Arduino Uno. Press Enter to continue" + W
 enter = raw_input("")
 
-os.system("dmesg > src/dmesg.txt")
-print O + "Checking..." + W
-sleep(3)
-fileHandle = open ( 'src/dmesg.txt',"r" )
-lineList = fileHandle.readlines()
-fileHandle.close()
+try:
+    os.system("dmesg > src/dmesg.txt")
+    print O + "Checking..." + W
+    sleep(3)
+    fileHandle = open ( 'src/dmesg.txt',"r" )
+    lineList = fileHandle.readlines()
+    fileHandle.close()
+except KeyboardInterrupt:
+    print R + "Interrupted! Killing..."
 
 
 for x in range(-4, 0):

