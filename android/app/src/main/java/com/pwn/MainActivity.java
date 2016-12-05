@@ -1,5 +1,6 @@
 package com.pwn;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("C: > pwn ");
-        final TextView console = (TextView) findViewById(R.id.console);
+
+
         /*JSch jsch = new JSch();
         String user ="derek";
 
@@ -115,20 +117,30 @@ public class MainActivity extends AppCompatActivity {
 
 
     */
+
+        Bundle extras = getIntent().getExtras();
+        final String user = getIntent().getExtras().getString("user");
+        final String host =getIntent().getExtras().getString("host");
+        final String pwd = getIntent().getExtras().getString("password");
+        System.out.println(host + " " + user + " " + pwd);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
 
                 Session session;
                 JSch jsch;
+
+            TextView console = (TextView) findViewById(R.id.console);
                 try {
                     jsch = new JSch();
 
                     /*session = jsch.getSession("derek", "10.55.176.112", 22);
                     session.setPassword("password");
+                    Bundle extras = getIntent().getExtras();
 */
-                    session = jsch.getSession("vmware", "theeditor.ddns.net", 22);
-                    session.setPassword("123");
+                    session = jsch.getSession(user, host, 22);
+                    session.setPassword(pwd);
                     // Avoid asking for key confirmation
                     Properties prop = new Properties();
                     prop.put("StrictHostKeyChecking", "no");
@@ -137,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     session.connect();
 
                     if(session.isConnected()){
+
                         console.setText(console.getText() + "\nSession Connected...");
                         Channel channel = session.openChannel("sftp");
                         System.out.println("Getting connected");
@@ -149,16 +162,18 @@ public class MainActivity extends AppCompatActivity {
 
                         System.out.println("Directory:" + sftpChannel.pwd());
 
-                        sftpChannel.mkdir("Derek");
+
 
 
                         System.out.println(this.getClass().getSimpleName() + " CONNECTED");
                         System.out.println(this.getClass().getSimpleName() + " YOO " + jsch.getIdentityRepository().getName()+" "+session.getClientVersion() + " " + session.isConnected());
                     }else{
+                        console.setText(console.getText() + "\nNot Connected");
                         System.out.println(this.getClass().getSimpleName() + " NOT CONNECTED");
                     }
                 }catch (Exception e){
                     e.printStackTrace();
+                    console.setText(console.getText() + "\nAnd error has occured: " + e);
                 }
             }
         }).start();}

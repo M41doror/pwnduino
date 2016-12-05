@@ -36,6 +36,21 @@
         android:textColor="@color/colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Host"/>
+    <EditText
+        android:paddingBottom="20dp"
+        android:textSize="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/host"
+        android:background="@color/textback"
+        />
+    <TextView
+        android:padding="30dp"
+        android:textSize="40dp"
+        android:textColor="@color/colorAccent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Password"/>
     <EditText
         android:paddingBottom="20dp"
