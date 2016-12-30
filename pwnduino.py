@@ -27,20 +27,6 @@ LC = '\033[1;36m' # light cyan
 MISSING = "[" + R + "MISSING!" + W + "]"
 FOUND = "[" + G + "FOUND" + W + "]"
 
-# Cowsay!
-header = LP + """
-
-  ______________________________________
- |Hey there! Before you go on, I need to|
- |see if you have an Arduino!           |
-  --------------------------------------
-         \   ^__^
-          \  (oo)\_______
-             (__)\       )\/
-                 ||----w |
-                 ||     ||
-
-""" + W
 
 header1 = """
 
@@ -92,9 +78,8 @@ signal.signal(signal.SIGINT, handler)
 ########################### Main Methods ###########################
 
 def checkArduino():
-    print header
 
-    print LC + "Welcome to pwnduino! Please insert your Arduino Uno. Press Enter to continue" + W
+    print LC + " Please insert your Arduino Uno. Press Enter to continue" + W
     raw_input()
 
 
@@ -104,16 +89,18 @@ def checkArduino():
         for p in serial.tools.list_ports.comports()
         if 'Arduino' in p.description
     ]
+
     if not arduino_ports:
-        sys.exit( LR + "[!] No Arduino Found! Exiting... [!]" + W )
+        print LR + "[!] No Arduino Found! [!]"
+        print "If Arduino is a HID, it will not be detected." + W
+        sleep(1.5)
+    else:
+        ser = serial.Serial(arduino_ports[0])
+        print G + "[*] Arduino Found! Entering Main Menu...[*]" + W
+        sleep(1.5)
+
     if len(arduino_ports) > 1:
         warnings.warn(LY + 'Multiple Arduinos found - using the first' + W)
-
-
-    ser = serial.Serial(arduino_ports[0])
-    print G + "[*] Arduino Found! Entering Main Menu...[*]" + W
-    sleep(1.5)
-
 
 
 def usbserial():
@@ -165,7 +152,7 @@ def keyboardflash():
 
 ##########################################################################################################
 
-checkArduino()
+
 
 while True:
     print header1 + LC
