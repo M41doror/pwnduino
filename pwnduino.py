@@ -1,7 +1,8 @@
 ############## Python Modules ##############
-import os, sys, argparse, signal, warnings, serial, platform
+import os, sys, argparse, signal, warnings, serial, platform,
 import serial.tools.list_ports
 from time import sleep
+from getpass import getpass
 
 ############## ############## ##############
 
@@ -131,10 +132,17 @@ def upload():
         script = raw_input(LC + "[>] Which script? " + W )
 
         if script == "1":
+            print "Uploading..."
             break
         elif script == "2":
-
-            os.system("arduino")
+            print "Please make sure that a proper email/SMTP address is configured in webbrowser.ino"
+            email = raw_input("> What is the email address?")
+            password = getpass("> What is the password (NOT ECHOED) ")
+            
+            print "Uploading..."
+            os.system("cd hid/webbrowser && sudo make upload")
+            print "Done"
+            break
         elif script == "3":
             print LR + "Not yet..." + W
             continue

