@@ -43,3 +43,7 @@ Plug in your Arduino Uno, and have fun!
 # 4. Troubleshooting
 
 LOL, No one used this yet. Of course there will be problems, but :P
+
+# 5. TODO
+
+This project still presets to us A LOT of potential issues, and we wish to improve upon them. Hacking with the Arduino Uno has already been seen previously after the introduction of the Teensy and the Rubber Ducky. The Arduino Uno is not the only model of the Arduino family that can be potentially hacked and turned into a malicious HID, but also other models, such as the Mega. These challenges present to us countless possibilities and even potential hardware modifications that enable us to enhance the overall effective of the program.

