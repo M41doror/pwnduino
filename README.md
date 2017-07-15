@@ -1,13 +1,11 @@
 # pwnduino
 Hacking with the Arduino Uno!
 
-# 1. Introduction
+## Introduction
 
-Many projects have existed out there (check out @samyk !) that turn Arduino HID keyboard devices into USB rubber ducky-likes. However, these devices are already themselves HID devices, and just require a bit of code in the form of Arduino `.ino` scripts to run. At times, many people are not able to obtain Teensy devices, or just simply want to work their existing hardware. With thanks to @ZP4, @Dr-D12345 and @thatguy1675, we were able to built a framework that turns Arduino Unos into malicious HID devices, dubbed __pwnduino__, and effectively hack and gain escalated privilege and persistence on an open computer.
+Many projects have existed out there (check out @samyk !) that turn Arduino HID keyboard devices into USB rubber ducky-likes. However, these devices are already themselves HID devices, and just require a bit of code in the form of Arduino `.ino` scripts to run. At times, many people are not able to obtain Teensy devices, or just simply want to work their existing hardware. We were able to built a framework that turns Arduino Unos into malicious HID devices, dubbed __pwnduino__, and effectively hack and gain escalated privilege and persistence on an open computer.
 
-__pwnduino__ is still a __work-in-progress__. Development for it, however, is very active.
-
-# 2. How it Works
+## How it Works
 
 An Arduino Uno (version rev. 3) has an `atmega16u2` chip on its board. We can flash this chip using a program called `dfu-programmer`, available on Linux distributions
 
@@ -26,24 +24,40 @@ Afterwards, you can still upload scripts to the Arduino. Once the Arduino is fla
 
 After uploading a script, __pwnduino__ will flash your Arduino into a keyboard HID device. Plug it into a vulnerable, and open computer, and watch the magic (not really) happen.
 
-# 3. Downloading and Installation
+## Downloading and Installation
 
     git clone https://github.com/ex0dus-0x/pwnduino
     cd /path/to/pwnduino
-    python installer.py
+    ./installer
 
-Super E-Z! Even a script kiddy can do it.
+## Usage
 
-After installation:
+This is the output of `--help`
 
-    python pwnduino.py
+    usage: pwnduino.py [-h] [--flash] [--unflash] [--detect]
 
-Plug in your Arduino Uno, and have fun!
+    Hacking with the Arduino Uno
 
-# 4. Troubleshooting
+    optional arguments:
+    -h, --help      show this help message and exit
+    --flash, -f     Flash your Arduino Uno into a malicious HID Device
+    --unflash, -uf  Revert your Arduino Uno into a regular serial device
+    --detect, -d    Attempts to detect your regular Arduino serial device
 
-LOL, No one used this yet. Of course there will be problems, but :P
+Now here's how to use it.
 
-# 5. TODO
+To detect if an Arduino is plugged in, use `--detect`. Keep in mind this only works for USb serial devices that aren't detected as a keyboard. To check for hardware changes, use `dmesg`.
+
+    python pwnduino.py --detect
+
+Before you flash to a HID, upload a script. Scripts are currently in the `scripts/` folder, and a work-in-progress `--upload` flag is being implemented.
+
+To flash, use `--flash`. Keep in mind that you should short the GND and ICSP pins, as demonstrated above.
+
+    python pwnduino.py --flash
+
+To unflash, use `--unflash`. Once again, short the pins. You will now have a regular serial USB device again.
+
+## TODO
 
 This project still presets to us A LOT of potential issues, and we wish to improve upon them. Hacking with the Arduino Uno has already been seen previously after the introduction of the Teensy and the Rubber Ducky. The Arduino Uno is not the only model of the Arduino family that can be potentially hacked and turned into a malicious HID, but also other models, such as the Mega. These challenges present to us countless possibilities and even potential hardware modifications that enable us to enhance the overall effective of the program.

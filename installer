@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "Running Installer!"
+sudo apt install arduino arduino-core arduino-mk dfu-programmer python-pip
+sudo pip install signal pyserial arduino-sketch
